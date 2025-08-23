@@ -12,8 +12,8 @@ const options: CheckboxGroupProps<OptionValue>['options'] = [
 ];
 
 export const ProfileTheme = () => {
-  const { appTheme, setSystemTheme, setLightTheme, setDarkTheme } = useAppChangeTheme();
-  const defaultValue = appTheme || 'system';
+  const { theme, setSystemTheme, setLightTheme, setDarkTheme } = useAppChangeTheme();
+  const defaultValue = theme || 'system';
 
   const handleChange: RadioProps['onChange'] = event => {
     const value = event.target.value as OptionValue;

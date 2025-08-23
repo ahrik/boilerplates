@@ -4,6 +4,8 @@ import { HomePageLazy } from '@pages/home';
 import { NotFoundPage } from '@pages/NotFound.page';
 import { SignInPageLazy } from '@pages/sign-in';
 import { ROUTERS } from '@shared/constants';
+import { ThemeProvider } from '@shared/theme';
+import { ThemeLoader } from '@/app/loaders/ThemeLoader';
 import { AppLayout } from './layouts/app-layout';
 import { ProtectedLayout } from './layouts/protected-layout';
 import { PublicLayout } from './layouts/public-layout';
@@ -13,11 +15,15 @@ import { AppProvider } from './providers/AppProvider';
 export const router = createBrowserRouter([
   {
     element: (
-      <AppLoader>
-        <AppProvider>
-          <AppLayout />
-        </AppProvider>
-      </AppLoader>
+      <ThemeProvider>
+        <AppLoader>
+          <ThemeLoader>
+            <AppProvider>
+              <AppLayout />
+            </AppProvider>
+          </ThemeLoader>
+        </AppLoader>
+      </ThemeProvider>
     ),
     children: [
       {

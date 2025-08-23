@@ -1,23 +1,34 @@
 import { useEffect, useState } from 'react';
-import { Theme } from './themeContext';
+
+export type Theme = 'light' | 'dark';
 
 export const useDetectChangeSystemTheme = () => {
-  const [systemTheme, setSystemTheme] = useState<Theme>();
+  const [systemTheme, setSystemTheme] = useState<Theme | undefined>(() => {
+    if (typeof window === 'undefined' || typeof window.matchMedia !== 'function') {
+      return undefined; // можно вернуть 'light' если нужен дефолт
+    }
 
-  const handleChange = (event: MediaQueryListEvent) => {
-    const theme = event.matches ? 'dark' : 'light';
-    setSystemTheme(theme);
-  };
+    return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+  });
 
   useEffect(() => {
-    const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+    if (typeof window === 'undefined' || typeof window.matchMedia !== 'function') return;
 
-    mediaQuery.addEventListener('change', handleChange);
+    const mql = window.matchMedia('(prefers-color-scheme: dark)');
 
-    return () => mediaQuery.removeEventListener('change', handleChange);
+    const onChange = (e: MediaQueryListEvent | MediaQueryList) => {
+      const matches = 'matches' in e ? e.matches : mql.matches;
+      setSystemTheme(matches ? 'dark' : 'light');
+    };
+
+    onChange(mql);
+
+    if (typeof mql.addEventListener === 'function') {
+      mql.addEventListener('change', onChange as EventListener);
+
+      return () => mql.removeEventListener('change', onChange as EventListener);
+    }
   }, []);
 
-  return {
-    systemTheme,
-  };
+  return { systemTheme };
 };

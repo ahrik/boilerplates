@@ -1,39 +1,44 @@
 import { StateCreator } from 'zustand';
-import { devtools } from 'zustand/middleware';
+import { devtools, persist } from 'zustand/middleware';
 import { create } from '@shared/lib/zustand';
-import { AppParams, AppParamsStoreActions, AppParamsStoreState } from './types';
+import { AppParamsStoreActions, AppParamsStoreState } from './types';
 
 type AppParamsStore = AppParamsStoreActions & AppParamsStoreState;
 
-const appParamsStoreSlice: StateCreator<AppParamsStore, [['zustand/devtools', never]]> = set => ({
-  appParams: new Map(),
+const appParamsStoreSlice: StateCreator<
+  AppParamsStore,
+  [['zustand/devtools', never], ['zustand/persist', unknown]]
+> = (set) => ({
+  appParams: {},
+  hydrated: false,
 
-  setAppParams: <K extends keyof AppParams>(key: K, value: AppParams[K]) => {
-    set(state => ({ appParams: new Map(state.appParams).set(key, value) }), false, 'appParamsStore/setAppParams');
-  },
-
-  removeAppParam: <K extends keyof AppParams>(key: K) => {
+  setTheme: (theme) =>
     set(
-      state => {
-        const updatedMap = new Map(state.appParams);
-        updatedMap.delete(key);
-
-        return { appParams: updatedMap };
-      },
+      (state) => ({
+        appParams: { ...(state.appParams ?? {}), theme },
+      }),
       false,
-      'appParamsStore/removeAppParam'
-    );
-  },
+      'appParams/setTheme'
+    ),
+
+  removeAppTheme: () =>
+    set((s) => {
+      const next = { ...s.appParams };
+      delete next.theme;
+      return { appParams: next };
+    }, false, 'appParams/removeTheme'),
+
+  setHydrated: (v) => set({ hydrated: v }, false, 'appParams/setHydrated'),
 });
 
 export const useAppParamsStore = create<AppParamsStore>()(
   devtools(
-    (...args) => ({
-      ...appParamsStoreSlice(...args),
+    persist(appParamsStoreSlice, {
+      name: 'appParams',
+      version: 1,
+      partialize: (state) => ({ appParams: state.appParams }),
     }),
-    {}
+    { name: 'appParamsStore' }
   )
 );
 
-export const getAppParams = <K extends keyof AppParams>(key: K): AppParams[K] | undefined =>
-  useAppParamsStore.getState().appParams.get(key) as AppParams[K] | undefined;

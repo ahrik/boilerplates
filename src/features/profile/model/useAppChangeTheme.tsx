@@ -1,11 +1,10 @@
-import { useAppParamsStore, useAppSettings } from '@entities/app-params';
-import { Theme } from '@shared/theme';
+import { useAppSettings } from '@entities/app-params';
+import { useDetectChangeSystemTheme, useTheme } from '@shared/theme';
 
 export const useAppChangeTheme = () => {
-  const { setAppTheme } = useAppSettings();
-  const appParams = useAppParamsStore(state => state.appParams);
-  const removeAppParam = useAppParamsStore(state => state.removeAppParam);
-  const appTheme = appParams.get('theme') as Theme | undefined;
+  const { setAppTheme, theme, removeAppTheme } = useAppSettings();
+  const { systemTheme } = useDetectChangeSystemTheme();
+  const { setTheme } = useTheme();
 
   const setLightTheme = () => {
     setAppTheme('light');
@@ -16,13 +15,19 @@ export const useAppChangeTheme = () => {
   };
 
   const setSystemTheme = () => {
-    removeAppParam('theme');
+    removeAppTheme();
+
+    console.log({ systemTheme });
+
+    if (systemTheme) {
+      setTheme(systemTheme);
+    }
   };
 
   return {
-    appTheme,
     setLightTheme,
     setDarkTheme,
     setSystemTheme,
+    theme,
   };
 };

@@ -15,8 +15,8 @@ export const Header = () => {
         <div className={styles.headerNav}>Nav</div>
 
         <div className={styles.headerActions}>
-          <SignOutButton />
           <Profile />
+          <SignOutButton />
         </div>
       </header>
     </div>
