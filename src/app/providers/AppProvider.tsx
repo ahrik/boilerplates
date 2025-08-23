@@ -7,8 +7,6 @@ import { useTheme } from '@shared/theme';
 export function AppProvider({ children }: PropsWithChildren) {
   const { theme } = useTheme();
 
-  console.log({ theme });
-
   return (
     <ComposeChildren>
       <AntProvider appTheme={theme} />

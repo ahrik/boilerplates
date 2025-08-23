@@ -17,8 +17,6 @@ export const useAppChangeTheme = () => {
   const setSystemTheme = () => {
     removeAppTheme();
 
-    console.log({ systemTheme });
-
     if (systemTheme) {
       setTheme(systemTheme);
     }
