@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from '@tanstack/react-router';
 import { useSessionStore } from '@entities/session';
 import { api } from '@shared/api';
 import { ROUTERS } from '@shared/constants';
@@ -18,7 +18,7 @@ export function useSignOut() {
     await api
       .signOut()
       .then(response => {
-        navigate(ROUTERS.SIGN_IN);
+        navigate({ to: ROUTERS.SIGN_IN });
 
         return response;
       })

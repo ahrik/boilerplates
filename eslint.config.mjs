@@ -71,6 +71,7 @@ export default tsEslint.config(
       'no-extra-semi': 1,
       '@typescript-eslint/ban-ts-comment': 'warn',
       '@typescript-eslint/no-unused-vars': 'warn',
+      "prettier/prettier": "warn",
 
       'simple-import-sort/imports': [
         'warn',

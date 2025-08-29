@@ -5,7 +5,7 @@ export type Theme = 'light' | 'dark';
 export const useDetectChangeSystemTheme = () => {
   const [systemTheme, setSystemTheme] = useState<Theme | undefined>(() => {
     if (typeof window === 'undefined' || typeof window.matchMedia !== 'function') {
-      return undefined; // можно вернуть 'light' если нужен дефолт
+      return 'light'; // по дефолту светлая тема
     }
 
     return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
@@ -24,9 +24,9 @@ export const useDetectChangeSystemTheme = () => {
     onChange(mql);
 
     if (typeof mql.addEventListener === 'function') {
-      mql.addEventListener('change', onChange as EventListener);
+      mql.addEventListener('change', onChange);
 
-      return () => mql.removeEventListener('change', onChange as EventListener);
+      return () => mql.removeEventListener('change', onChange);
     }
   }, []);
 

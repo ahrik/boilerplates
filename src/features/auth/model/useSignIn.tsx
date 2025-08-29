@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from '@tanstack/react-router';
 import { useSessionStore } from '@entities/session';
 import { api } from '@shared/api';
 import { ROUTERS } from '@shared/constants';
@@ -22,7 +22,7 @@ export const useSignIn = () => {
       .then(session => {
         setCurrentSession(session);
         addSuccessToast(t('sign-in'));
-        navigate(ROUTERS.ROOT);
+        navigate({ to: ROUTERS.ROOT });
 
         return session;
       })

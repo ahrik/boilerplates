@@ -1,4 +1,4 @@
-import { Outlet } from 'react-router-dom';
+import { Outlet } from '@tanstack/react-router';
 import { Logo } from '@shared/ui/Logo';
 
 import styles from './publicLayout.module.scss';
