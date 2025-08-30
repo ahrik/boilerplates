@@ -12,6 +12,8 @@ tags:
     description: Endpoints related to session management
   - name: Users
     description: Endpoints for profile management
+  - name: Tasks
+    description: Endpoints for task management
 
 paths:
   /session/me:
@@ -67,6 +69,99 @@ paths:
           description: Session successfully terminated
         '401':
           description: Unauthorized - User is not authenticated
+
+  /tasks:
+    get:
+      tags:
+        - Tasks
+      operationId: getTasks
+      summary: Get all tasks
+      description: |
+        Returns a list of all tasks.
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Task'
+
+    post:
+      tags:
+        - Tasks
+      operationId: createTask
+      summary: Create new task
+      description: |
+        Creates a new task.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateTask'
+      responses:
+        '201':
+          description: Task created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Task'
+
+  /tasks/{id}:
+    get:
+      tags:
+        - Tasks
+      operationId: getTaskById
+      summary: Get task by ID
+      parameters:
+        - $ref: '#/components/parameters/TaskId'
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Task'
+        '404':
+          description: Task not found
+
+    patch:
+      tags:
+        - Tasks
+      operationId: updateTask
+      summary: Update task
+      parameters:
+        - $ref: '#/components/parameters/TaskId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateTask'
+      responses:
+        '200':
+          description: Task updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Task'
+        '404':
+          description: Task not found
+
+    delete:
+      tags:
+        - Tasks
+      operationId: deleteTask
+      summary: Delete task
+      parameters:
+        - $ref: '#/components/parameters/TaskId'
+      responses:
+        '204':
+          description: Task deleted successfully
+        '404':
+          description: Task not found
 
 components:
   schemas:
@@ -154,6 +249,45 @@ components:
           format: email
         role:
           $ref: '#/components/schemas/UserRole'
+    Task:
+      type: object
+      required:
+        - id
+        - title
+        - description
+        - completed
+      properties:
+        id:
+          type: integer
+          format: int64
+        title:
+          type: string
+        description:
+          type: string
+        completed:
+          type: boolean
+    CreateTask:
+      type: object
+      required:
+        - title
+        - description
+      properties:
+        title:
+          type: string
+        description:
+          type: string
+        completed:
+          type: boolean
+          default: false
+    UpdateTask:
+      type: object
+      properties:
+        title:
+          type: string
+        description:
+          type: string
+        completed:
+          type: boolean
 
   parameters:
     UserId:
@@ -163,6 +297,13 @@ components:
       schema:
         type: string
         format: uuid
+    TaskId:
+      name: id
+      in: path
+      required: true
+      schema:
+        type: integer
+        format: int64
 
   responses:
     Success:

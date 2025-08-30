@@ -1,6 +1,7 @@
 import { delay, http, HttpResponse } from 'msw';
-import { CreateUser, SignIn } from '../generated_api';
+import { CreateTask, CreateUser, SignIn, UpdateTask } from '../generated_api';
 import { sessionRepository } from './session.repository';
+import { tasksRepository } from './tasks.repository';
 import { usersRepository } from './users.repository';
 
 const needAuthorization = async () => {
@@ -119,6 +120,89 @@ export const getHandlers = async () => {
       }
 
       await sessionRepository.signOut();
+
+      return ok();
+    }),
+
+    http.get('/api/tasks', async () => {
+      await delay(1000);
+      const sesson = await sessionRepository.getSession();
+
+      if (!sesson) {
+        return needAuthorization();
+      }
+
+      const tasks = await tasksRepository.getTasks();
+
+      return ok(tasks);
+    }),
+
+    http.get('/api/tasks/:id', async ({ params }) => {
+      await delay(1000);
+      const sesson = await sessionRepository.getSession();
+
+      if (!sesson) {
+        return needAuthorization();
+      }
+
+      const id = Number(params.id);
+
+      const task = await tasksRepository.getTaskById(id);
+
+      return ok(task);
+    }),
+
+    http.post('/api/tasks', async ({ request }) => {
+      const sesson = await sessionRepository.getSession();
+
+      if (!sesson) {
+        return needAuthorization();
+      }
+
+      if (sesson.role !== 'admin') {
+        return unauthorized();
+      }
+
+      const body = await request.json();
+
+      const newTask = await tasksRepository.addTask(body as CreateTask);
+
+      return ok(newTask);
+    }),
+
+    http.patch('/api/tasks/:id', async ({ request, params }) => {
+      const sesson = await sessionRepository.getSession();
+
+      if (!sesson) {
+        return needAuthorization();
+      }
+
+      if (sesson.role !== 'admin') {
+        return unauthorized();
+      }
+
+      const id = Number(params.id);
+
+      const body = await request.json();
+
+      const updatedTask = await tasksRepository.updateTask(id, body as UpdateTask);
+
+      return ok(updatedTask);
+    }),
+
+    http.delete('/api/tasks/:id', async ({ params }) => {
+      const sesson = await sessionRepository.getSession();
+
+      if (!sesson) {
+        return needAuthorization();
+      }
+
+      if (sesson.role !== 'admin') {
+        return unauthorized();
+      }
+
+      const id = Number(params.id);
+      await tasksRepository.removeTask(id);
 
       return ok();
     }),

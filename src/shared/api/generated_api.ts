@@ -47,6 +47,25 @@ export interface Session {
   role: UserRole;
 }
 
+export interface Task {
+  id: number;
+  title: string;
+  description: string;
+  completed: boolean;
+}
+
+export interface CreateTask {
+  title: string;
+  description: string;
+  completed?: boolean;
+}
+
+export interface UpdateTask {
+  title?: string;
+  description?: string;
+  completed?: boolean;
+}
+
 export type SuccessResponseData = { [key: string]: unknown };
 
 export type SuccessResponse = {
@@ -88,6 +107,60 @@ export const signOut = (options?: SecondParameter<typeof createInstance>) => {
   return createInstance<null>({ url: `/session/sign-out`, method: 'POST' }, options);
 };
 
+/**
+ * Returns a list of all tasks.
+
+ * @summary Get all tasks
+ */
+export const getTasks = (options?: SecondParameter<typeof createInstance>) => {
+  return createInstance<Task[]>({ url: `/tasks`, method: 'GET' }, options);
+};
+
+/**
+ * Creates a new task.
+
+ * @summary Create new task
+ */
+export const createTask = (createTask: BodyType<CreateTask>, options?: SecondParameter<typeof createInstance>) => {
+  return createInstance<Task>(
+    { url: `/tasks`, method: 'POST', headers: { 'Content-Type': 'application/json' }, data: createTask },
+    options
+  );
+};
+
+/**
+ * @summary Get task by ID
+ */
+export const getTaskById = (id: number, options?: SecondParameter<typeof createInstance>) => {
+  return createInstance<Task>({ url: `/tasks/${id}`, method: 'GET' }, options);
+};
+
+/**
+ * @summary Update task
+ */
+export const updateTask = (
+  id: number,
+  updateTask: BodyType<UpdateTask>,
+  options?: SecondParameter<typeof createInstance>
+) => {
+  return createInstance<Task>(
+    { url: `/tasks/${id}`, method: 'PATCH', headers: { 'Content-Type': 'application/json' }, data: updateTask },
+    options
+  );
+};
+
+/**
+ * @summary Delete task
+ */
+export const deleteTask = (id: number, options?: SecondParameter<typeof createInstance>) => {
+  return createInstance<null>({ url: `/tasks/${id}`, method: 'DELETE' }, options);
+};
+
 export type GetSessionResult = NonNullable<Awaited<ReturnType<typeof getSession>>>;
 export type SignInResult = NonNullable<Awaited<ReturnType<typeof signIn>>>;
 export type SignOutResult = NonNullable<Awaited<ReturnType<typeof signOut>>>;
+export type GetTasksResult = NonNullable<Awaited<ReturnType<typeof getTasks>>>;
+export type CreateTaskResult = NonNullable<Awaited<ReturnType<typeof createTask>>>;
+export type GetTaskByIdResult = NonNullable<Awaited<ReturnType<typeof getTaskById>>>;
+export type UpdateTaskResult = NonNullable<Awaited<ReturnType<typeof updateTask>>>;
+export type DeleteTaskResult = NonNullable<Awaited<ReturnType<typeof deleteTask>>>;
