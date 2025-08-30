@@ -1,43 +1,54 @@
-import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useForm, useStore } from '@tanstack/react-form';
 import { useNavigate } from '@tanstack/react-router';
 import { useSessionStore } from '@entities/session';
-import { api } from '@shared/api';
 import { ROUTERS } from '@shared/constants';
 import { useToast } from '@shared/lib/toasts';
+import { useSignIn } from '@/entities/auth';
 import { SignIn } from '../types';
+import { SingInFormFieldsSchema } from './schema';
 
-export const useSignIn = () => {
+export const useSignInHook = () => {
   const navigate = useNavigate();
   const { addSuccessToast } = useToast();
   const { t } = useTranslation();
   const setCurrentSession = useSessionStore(({ setCurrentSession }) => setCurrentSession);
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+
+  const { mutate, isPending, error } = useSignIn();
+
+  const form = useForm({
+    defaultValues: {
+      email: '',
+      password: '',
+    },
+    validators: {
+      onChange: SingInFormFieldsSchema,
+      onSubmit: SingInFormFieldsSchema,
+    },
+    onSubmit: data => {
+      signIn(data.value);
+    },
+  });
+
+  const isSubmitting = useStore(form.store, state => state.isSubmitting);
+
+  const inProgress = isPending || isSubmitting;
 
   const signIn = (signInParams: SignIn) => {
-    setIsLoading(true);
-    api
-      .signIn(signInParams)
-      .then(session => {
+    mutate(signInParams, {
+      onSuccess: session => {
         setCurrentSession(session);
         addSuccessToast(t('sign-in'));
         navigate({ to: ROUTERS.ROOT });
-
-        return session;
-      })
-      .catch((error: Error | unknown) => {
-        console.error(error);
-        setError(t('sign-in-error'));
-      })
-      .finally(() => {
-        setIsLoading(false);
-      });
+      },
+    });
   };
 
   return {
     error,
-    isLoading,
+    isPending,
     signIn,
+    inProgress,
+    form,
   };
 };
