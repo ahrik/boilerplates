@@ -16,7 +16,7 @@ export function SignInForm({ className }: Props) {
       <AppInput
         name="email"
         label="Email"
-        inputProps={{ type: 'email', placeholder: 'example@ex.com' }}
+        inputProps={{ type: 'email', placeholder: 'example@ex.com', autoComplete: 'username' }}
         fieldProps={{ disabled: inProgress }}
       />
       <AppInput
