@@ -1,12 +1,25 @@
-import { forwardRef, PropsWithChildren } from 'react';
-import { Button as AntdButton, ButtonProps } from 'antd';
+import { ButtonHTMLAttributes, ReactNode } from 'react';
 
-type Props = ButtonProps & PropsWithChildren;
+type Props = ButtonHTMLAttributes<HTMLButtonElement> & {
+  loading?: boolean;
+  icon?: ReactNode;
+};
 
-export const Button = forwardRef<HTMLButtonElement, Props>(({ children, ...restProps }: Props, ref) => {
+export function Button({ children, className, loading, icon, ...props }: Props) {
   return (
-    <AntdButton ref={ref} {...restProps}>
-      {children}
-    </AntdButton>
+    <button
+      className={`px-3 py-1 rounded-xl bg-gray-400 text-white font-medium hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-400 disabled:opacity-50 disabled:cursor-not-allowed ${className}`}
+      disabled={loading || props.disabled}
+      {...props}
+    >
+      {loading ? (
+        'Loading...'
+      ) : (
+        <>
+          {icon}
+          {children}
+        </>
+      )}
+    </button>
   );
-});
+}

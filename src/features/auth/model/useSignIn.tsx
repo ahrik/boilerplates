@@ -38,7 +38,7 @@ export const useSignInHook = () => {
     mutate(signInParams, {
       onSuccess: session => {
         setCurrentSession(session);
-        addSuccessToast(t('sign-in'));
+        addSuccessToast({ description: t('sign-in') });
         navigate({ to: ROUTERS.ROOT });
       },
     });

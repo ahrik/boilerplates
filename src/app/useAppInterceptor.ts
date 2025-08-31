@@ -21,5 +21,5 @@ export function useAppInterceptor() {
         throw error;
       }
     );
-  }, [navigation]);
+  }, []);
 }

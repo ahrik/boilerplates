@@ -1,4 +1,4 @@
 import { createContext } from 'react';
-import { ToastContextType } from './types';
+import { createToaster } from '@ark-ui/react';
 
-export const ToastContext = createContext<ToastContextType | null>(null);
+export const ToastContext = createContext<ReturnType<typeof createToaster> | null>(null);

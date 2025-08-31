@@ -1,14 +1,14 @@
 import { PropsWithChildren } from 'react';
-import { notification } from 'antd';
+import { createToaster } from '@ark-ui/react';
 import { ToastContext } from './toast-context';
 
-export const ToastProvider = ({ children }: PropsWithChildren) => {
-  const [notificationApi, contextHolder] = notification.useNotification();
+const toaster = createToaster({
+  placement: 'top-end',
+  overlap: true,
+  gap: 24,
+  duration: 3000,
+});
 
-  return (
-    <ToastContext.Provider value={{ notificationApi }}>
-      {contextHolder}
-      {children}
-    </ToastContext.Provider>
-  );
+export const ToastProvider = ({ children }: PropsWithChildren) => {
+  return <ToastContext.Provider value={toaster}>{children}</ToastContext.Provider>;
 };

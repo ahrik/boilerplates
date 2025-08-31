@@ -1,7 +1,6 @@
 import { useTranslation } from 'react-i18next';
-import { Button } from '@headlessui/react';
-import { AppInput } from '@/shared/tanstack-fields/ui/AppInput';
-import { FormProvider } from '@/shared/tanstack-fields/ui/FormProvider';
+import { Button } from '@shared/ui/Button';
+import { AppInput, FormProvider } from '@/shared/tanstack-fields';
 import { useSignInHook } from '../model/useSignIn';
 
 type Props = {
@@ -23,13 +22,16 @@ export function SignInForm({ className }: Props) {
       <AppInput
         label={t('password-label')}
         name="password"
-        inputProps={{ type: 'password', placeholder: '****' }}
+        inputProps={{ type: 'password', placeholder: '****', autoComplete: 'current-password' }}
         fieldProps={{ disabled: inProgress }}
       />
-      <Button disabled={inProgress} type="submit">
-        {t('enter')}
-      </Button>
-      {error && <p>{t('sign-in-error')}</p>}
+      <div className="flex justify-center mt-3">
+        <Button disabled={inProgress} type="submit" loading={inProgress}>
+          {t('enter')}
+        </Button>
+      </div>
+
+      {error && <p className="text-red-500">{t('sign-in-error')}</p>}
     </FormProvider>
   );
 }

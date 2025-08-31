@@ -1,11 +1,9 @@
-import { LogoutOutlined } from '@ant-design/icons';
+import { LogOutIcon } from 'lucide-react';
 import { Button } from '@shared/ui/Button';
-import { useSignOut } from '../model/useSignOut';
+import { useSignOutHook } from '../model/useSignOut';
 
 export function SignOutButton({ className }: { className?: string }) {
-  const { signOut, isLoading } = useSignOut();
+  const { signOut, isLoading } = useSignOutHook();
 
-  return (
-    <Button loading={isLoading} className={className} onClick={signOut} shape="circle" icon={<LogoutOutlined />} />
-  );
+  return <Button loading={isLoading} className={className} onClick={signOut} icon={<LogOutIcon />} />;
 }

@@ -1,6 +1,10 @@
 import { useContext } from 'react';
+import { createToaster } from '@ark-ui/react';
 import { ToastContext } from './toast-context';
-import { ToastProps, ToastType } from './types';
+
+type ToastType = 'success' | 'warning' | 'error' | 'info';
+
+type ToastData = Parameters<ReturnType<typeof createToaster>[ToastType]>[0];
 
 export const useToast = () => {
   const context = useContext(ToastContext);
@@ -8,12 +12,8 @@ export const useToast = () => {
     throw new Error('useToast must be used within a ToastProvider');
   }
 
-  const getToast = (type: ToastType) => (message: ToastProps['message'], key?: ToastProps['key']) => {
-    context.notificationApi[type]({ message, key });
-  };
-
-  const destroyToast = (key: ToastProps['key']) => {
-    context.notificationApi.destroy(key);
+  const getToast = (type: ToastType) => (data: ToastData) => {
+    context[type](data);
   };
 
   return {
@@ -21,7 +21,5 @@ export const useToast = () => {
     addErrorToast: getToast('error'),
     addInfoToast: getToast('info'),
     addWarningToast: getToast('warning'),
-
-    destroyToast,
   };
 };

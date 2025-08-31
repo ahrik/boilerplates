@@ -1,14 +1,14 @@
-import { Field, FieldInputProps, FieldRootProps } from '@ark-ui/react';
+import { Field, FieldRootProps, FieldTextareaProps } from '@ark-ui/react';
 import { useTanstackFormContext } from '../model/useTanstackFormContext';
 
 type Props = {
   name: string;
   label?: string;
   fieldProps?: FieldRootProps;
-  inputProps?: FieldInputProps;
+  textareaProps?: FieldTextareaProps;
 };
 
-export const AppInput = ({ name, label, fieldProps, inputProps }: Props) => {
+export const AppTextarea = ({ name, label, fieldProps, textareaProps }: Props) => {
   const form = useTanstackFormContext();
 
   return (
@@ -24,11 +24,11 @@ export const AppInput = ({ name, label, fieldProps, inputProps }: Props) => {
         return (
           <Field.Root invalid={showError && !!message} className="flex flex-col gap-1" {...fieldProps}>
             {label && <Field.Label>{label}</Field.Label>}
-            <Field.Input
+            <Field.Textarea
               value={field.state.value as string}
               onChange={event => field.handleChange(event.target.value)}
               className="rounded-lg border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-              {...inputProps}
+              {...textareaProps}
             />
             <Field.ErrorText className="text-red-500">{message}</Field.ErrorText>
           </Field.Root>

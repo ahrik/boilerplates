@@ -1,5 +1,4 @@
 import { SignOutButton } from '@features/auth';
-import { Profile } from '@features/profile';
 import { Logo } from '@shared/ui/Logo';
 
 import styles from './header.module.scss';
@@ -15,7 +14,6 @@ export const Header = () => {
         <div className={styles.headerNav}>Nav</div>
 
         <div className={styles.headerActions}>
-          <Profile />
           <SignOutButton />
         </div>
       </header>

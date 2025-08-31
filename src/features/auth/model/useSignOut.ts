@@ -1,36 +1,20 @@
-import { useState } from 'react';
-import { useTranslation } from 'react-i18next';
 import { useNavigate } from '@tanstack/react-router';
 import { useSessionStore } from '@entities/session';
-import { api } from '@shared/api';
 import { ROUTERS } from '@shared/constants';
+import { useSignOut } from '@/entities/auth';
 
-export function useSignOut() {
+export function useSignOutHook() {
   const navigate = useNavigate();
-  const { t } = useTranslation();
+  const { mutate, isPending: isLoading, error } = useSignOut();
   const removeSession = useSessionStore(({ removeSession }) => removeSession);
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
 
   const signOut = async () => {
-    setIsLoading(true);
-
-    await api
-      .signOut()
-      .then(response => {
+    mutate(undefined, {
+      onSuccess: () => {
+        removeSession();
         navigate({ to: ROUTERS.SIGN_IN });
-
-        return response;
-      })
-      .catch((error: Error | unknown) => {
-        console.error(error);
-        setError(t('something-wrong'));
-      })
-      .finally(() => {
-        setIsLoading(false);
-      });
-
-    return removeSession();
+      },
+    });
   };
 
   return {

@@ -1,17 +1,16 @@
-import { LoadingOutlined } from '@ant-design/icons';
-import { Flex, Spin, SpinProps } from 'antd';
 import clsx from 'clsx';
+import { LoaderCircle } from 'lucide-react';
 
 import styles from './spinner.module.scss';
 
-type Props = SpinProps & {
+type Props = {
   isFullScreen?: boolean;
 };
 
-export const Spinner = ({ isFullScreen, ...spinProps }: Props) => {
+export const Spinner = ({ isFullScreen }: Props) => {
   return (
-    <Flex align="center" gap="middle" className={clsx(isFullScreen && styles.spinnerIsFull)}>
-      <Spin indicator={<LoadingOutlined spin />} size="large" {...spinProps} />
-    </Flex>
+    <div className={clsx(isFullScreen && styles.spinnerIsFull, 'flex items-center justify-center')}>
+      <LoaderCircle fontSize={'200px'} className={styles.spinnerIcon} />
+    </div>
   );
 };
