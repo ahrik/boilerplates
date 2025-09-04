@@ -17,11 +17,6 @@ export default tsEslint.config(
   ...tsEslint.configs.recommended,
 
   {
-    extends: [js.configs.recommended, ...tsEslint.configs.recommended],
-    files: ['**/*.{ts,tsx}'],
-  },
-
-  {
     plugins: {
       '@typescript-eslint': tsEslint.plugin,
       'jsx-a11y': jsxA11yPlugin,
@@ -71,7 +66,7 @@ export default tsEslint.config(
       'no-extra-semi': 1,
       '@typescript-eslint/ban-ts-comment': 'warn',
       '@typescript-eslint/no-unused-vars': 'warn',
-      "prettier/prettier": "warn",
+      'prettier/prettier': 'warn',
 
       'simple-import-sort/imports': [
         'warn',
