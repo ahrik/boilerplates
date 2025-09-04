@@ -3,10 +3,11 @@ import { Session, SignIn } from '../generated_api';
 import { persistStorage } from './persist-storage';
 import { usersRepository } from './users.repository';
 
-const SESSION_STORAGE_KEY = 'session_storage';
+const STORAGE_KEY = 'session_storage';
+
 export const sessionRepository = {
   getSession: () => {
-    return persistStorage.getItemSafe<Session | undefined>(SESSION_STORAGE_KEY, undefined);
+    return persistStorage.getItemSafe<Session | undefined>(STORAGE_KEY, undefined);
   },
 
   signIn: async (value: SignIn) => {
@@ -29,10 +30,10 @@ export const sessionRepository = {
       id: nanoid(),
     } satisfies Session;
 
-    return persistStorage.setItemSafe(SESSION_STORAGE_KEY, session);
+    return persistStorage.setItemSafe(STORAGE_KEY, session);
   },
 
   signOut: () => {
-    return persistStorage.setItemSafe(SESSION_STORAGE_KEY, undefined);
+    return persistStorage.setItemSafe(STORAGE_KEY, undefined);
   },
 };

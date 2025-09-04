@@ -1,5 +1,6 @@
 import { delay, http, HttpResponse } from 'msw';
-import { CreateUser, SignIn } from '../generated_api';
+import { tasksRepository } from '@shared/api/msw/tasks.repository';
+import { CreateUser, SignIn, Task } from '../generated_api';
 import { sessionRepository } from './session.repository';
 import { usersRepository } from './users.repository';
 
@@ -15,6 +16,15 @@ const needAuthorization = async () => {
 const unauthorized = async () => {
   return new HttpResponse(null, {
     status: 403,
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  });
+};
+
+const notFound = async () => {
+  return new HttpResponse(null, {
+    status: 404,
     headers: {
       'Content-Type': 'application/json',
     },
@@ -121,6 +131,52 @@ export const getHandlers = async () => {
       await sessionRepository.signOut();
 
       return ok();
+    }),
+
+    // Tasks
+    http.get('/api/tasks', async () => {
+      await delay(1000);
+      const tasks = await tasksRepository.getTasks();
+
+      return ok(tasks);
+    }),
+
+    http.get('/api/tasks/:id', async ({ params }) => {
+      const taskId = params.id as string;
+      await delay(1000);
+      const tasks = await tasksRepository.getTasks();
+      const task = tasks.find(task => task.id === taskId);
+
+      if (!task) {
+        return notFound();
+      }
+
+      return ok(task);
+    }),
+
+    http.post('/api/tasks', async ({ request }) => {
+      await delay(1000);
+      const body = await request.json();
+      const task = await tasksRepository.addTask(body as Task);
+
+      return ok(task);
+    }),
+
+    http.put('/api/tasks/:id', async ({ params, request }) => {
+      await delay(1000);
+      const taskId = params.id as string;
+      const tasks = await tasksRepository.getTasks();
+      const task = tasks.find(task => task.id === taskId);
+
+      if (!task) {
+        return notFound();
+      }
+
+      const body = await request.json();
+
+      await tasksRepository.changeTask(taskId, body as Partial<Task>);
+
+      return ok(body);
     }),
   ];
 };

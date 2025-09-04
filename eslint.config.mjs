@@ -1,4 +1,5 @@
 import js from '@eslint/js';
+import pluginQuery from '@tanstack/eslint-plugin-query';
 import tsParser from '@typescript-eslint/parser';
 import importPlugin from 'eslint-plugin-import';
 import jsdocPlugin from 'eslint-plugin-jsdoc';
@@ -33,6 +34,7 @@ export default tsEslint.config(
       jsdoc: jsdocPlugin,
       prettier: eslintPrettier,
       react: eslintReact,
+      '@tanstack/query': pluginQuery,
     },
   },
 
@@ -98,6 +100,7 @@ export default tsEslint.config(
       'import/newline-after-import': 'error',
       'import/no-duplicates': 'error',
       'simple-import-sort/exports': 'warn',
+      '@tanstack/query/exhaustive-deps': 'error',
     },
   },
 

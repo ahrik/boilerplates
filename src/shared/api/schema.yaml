@@ -12,6 +12,8 @@ tags:
     description: Endpoints related to session management
   - name: Users
     description: Endpoints for profile management
+  - name: Tasks
+    description: Endpoints for task management
 
 paths:
   /session/me:
@@ -67,6 +69,91 @@ paths:
           description: Session successfully terminated
         '401':
           description: Unauthorized - User is not authenticated
+
+  /tasks:
+    get:
+      tags:
+        - Tasks
+      operationId: listTasks
+      summary: Get all tasks
+      description: Returns a list of tasks.
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Task'
+    post:
+      tags:
+        - Tasks
+      operationId: createTask
+      summary: Create a new task
+      description: Creates a new task. Server sets id, createdAt, updatedAt.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateTask'
+      responses:
+        '201':
+          description: Task created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Task'
+
+  /tasks/{id}:
+    get:
+      tags:
+        - Tasks
+      operationId: getTaskById
+      summary: Get task by ID
+      parameters:
+        - $ref: '#/components/parameters/TaskId'
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Task'
+        '404':
+          description: Task not found
+    delete:
+      tags:
+        - Tasks
+      operationId: deleteTask
+      summary: Delete task by ID
+      parameters:
+        - $ref: '#/components/parameters/TaskId'
+      responses:
+        '204':
+          description: Task deleted
+        '404':
+          description: Task not found
+
+  /tasks/{id}/archive:
+    post:
+      tags:
+        - Tasks
+      operationId: archiveTask
+      summary: Archive task by ID
+      description: Moves the task to archive.
+      parameters:
+        - $ref: '#/components/parameters/TaskId'
+      responses:
+        '200':
+          description: Task archived
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Task'
+        '404':
+          description: Task not found
 
 components:
   schemas:
@@ -154,6 +241,56 @@ components:
           format: email
         role:
           $ref: '#/components/schemas/UserRole'
+    TaskStatus:
+      type: string
+      enum:
+        - pending
+        - in-progress
+        - completed
+        - canceled
+    Task:
+      type: object
+      required:
+        - id
+        - title
+      properties:
+        id:
+          type: string
+        title:
+          type: string
+        description:
+          type: string
+        status:
+          $ref: '#/components/schemas/TaskStatus'
+          default: pending
+        reason:
+          type: string
+        dueDate:
+          type: string
+          format: date-time
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+    CreateTask:
+      type: object
+      required:
+        - title
+      properties:
+        title:
+          type: string
+        description:
+          type: string
+        status:
+          $ref: '#/components/schemas/TaskStatus'
+          default: pending
+        reason:
+          type: string
+        dueDate:
+          type: string
+          format: date-time
 
   parameters:
     UserId:
@@ -163,6 +300,12 @@ components:
       schema:
         type: string
         format: uuid
+    TaskId:
+      name: id
+      in: path
+      required: true
+      schema:
+        type: string
 
   responses:
     Success:
