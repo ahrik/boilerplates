@@ -6,10 +6,11 @@ type UserType = User & {
   password: string;
 };
 
-const USERS_STORAGE_KEY = 'users_storsage';
+const STORAGE_KEY = 'users_storsage';
+
 export const usersRepository = {
   getUsers: () => {
-    return persistStorage.getItemSafe<UserType[]>(USERS_STORAGE_KEY, []);
+    return persistStorage.getItemSafe<UserType[]>(STORAGE_KEY, []);
   },
 
   addUser: async (value: Omit<CreateUser, 'id'>) => {
@@ -18,15 +19,16 @@ export const usersRepository = {
       ...value,
       id: nanoid(),
     };
-    await persistStorage.setItemSafe<UserType[]>(USERS_STORAGE_KEY, users.concat([newUser]));
+    await persistStorage.setItemSafe<UserType[]>(STORAGE_KEY, users.concat([newUser]));
 
     return newUser;
   },
 
   removeUser: async (userId: string) => {
     const users = await usersRepository.getUsers();
+
     await persistStorage.setItemSafe(
-      USERS_STORAGE_KEY,
+      STORAGE_KEY,
       users.filter(user => user.id !== userId)
     );
   },

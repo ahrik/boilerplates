@@ -3,6 +3,7 @@ import { ForbiddenPage } from '@pages/Forbidden.page';
 import { HomePageLazy } from '@pages/home';
 import { NotFoundPage } from '@pages/NotFound.page';
 import { SignInPageLazy } from '@pages/sign-in';
+import { TasksPageLazy } from '@pages/tasks';
 import { ROUTERS } from '@shared/constants';
 import { ThemeProvider } from '@shared/theme';
 import { ThemeLoader } from '@/app/loaders/ThemeLoader';
@@ -32,6 +33,10 @@ export const router = createBrowserRouter([
           {
             path: ROUTERS.ROOT,
             element: <HomePageLazy />,
+          },
+          {
+            path: ROUTERS.ADD_TASK,
+            element: <TasksPageLazy />,
           },
         ],
       },

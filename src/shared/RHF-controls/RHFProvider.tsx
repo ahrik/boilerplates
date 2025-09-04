@@ -2,7 +2,7 @@ import { ComponentPropsWithRef } from 'react';
 import { FieldValues, FormProvider as ReactHookFormProvider, SubmitHandler, UseFormReturn } from 'react-hook-form';
 import { Form, FormProps } from 'antd';
 
-export type FormProviderProps<T extends FieldValues> = Omit<ComponentPropsWithRef<'form'>, 'onSubmit'> & {
+export type FormProviderProps<T extends FieldValues = FieldValues> = Omit<ComponentPropsWithRef<'form'>, 'onSubmit'> & {
   methods: UseFormReturn<T>;
   onSubmit: SubmitHandler<T>;
   fullWidth?: boolean;
@@ -23,8 +23,8 @@ export const FormProvider = <T extends FieldValues>(props: FormProviderProps<T>)
         onFinish={handleSubmit(onSubmit)}
         onChange={onChange}
         variant="outlined"
-        {...formItemLayout}
         layout="vertical"
+        {...formItemLayout}
       >
         {children}
       </Form>
